@@ -1,5 +1,5 @@
 import { Batalla } from '../models/Batalla.js';
-import { realizarAtaque } from './ataqueService.js';
+import { realizarAtaque } from './ataquesService.js';
 
 class BatallaService {
     constructor() {
