@@ -2,13 +2,15 @@ import { batallaService } from "../service/batallaService.js";
 import { Jugador } from "../models/Jugador.js";
 import { Pokemon } from "../models/Pokemon.js";
 
+const batallaservice = new batallaService();
+
 export const crearBatalla = (req, res) => {
     const {nombreJugador1, pokemonesJugador1, nombreJugador2, pokemonesJugador2} = req.body;
 
     const jugador1 = new Jugador(nombreJugador1, pokemonesJugador1.map(pokemon => new Pokemon(pokemon)));
     const jugador2 = new Jugador(nombreJugador2, pokemonesJugador2.map(pokemon => new Pokemon(pokemon)));
 
-    const batallaId = batallaService.crearBatalla(jugador1, jugador2);
+    const batallaId = batallaservice.crearBatalla(jugador1, jugador2);
     res.json({messsage: 'Batalla creada', batallaId});
 }
 
