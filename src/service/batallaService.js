@@ -53,6 +53,29 @@ class BatallaService {
 
         return response;
     }
+
+    obtenerResumenBatalla = (batallaId) => {
+        const batalla = this.obtenerBatalla(batallaId);
+        const resumen = {
+            jugador1: {
+                nombre: batalla.jugador1.nombre,
+                pokemones: batalla.jugador1.pokemones.map(p => ({
+                    nombre: p.nombre,
+                    hp: p.hp,
+                    movimientos: p.movimientos.map(m => m.nombre)
+                }))
+            },
+            jugador2: {
+                nombre: batalla.jugador2.nombre,
+                pokemones: batalla.jugador2.pokemones.map(p => ({
+                    nombre: p.nombre,
+                    hp: p.hp,
+                    movimientos: p.movimientos.map(m => m.nombre)
+                }))
+            }
+        };
+        return resumen;
+    }
 }
 
 export const batallaService = new BatallaService();

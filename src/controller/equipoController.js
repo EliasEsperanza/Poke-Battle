@@ -20,6 +20,12 @@ export const vidaPokemonActivoController = (req, res) => {
 
 export const cambiarPokemonController = (req, res) => {
     const { batallaId, jugadorId } = req.params;
-    const nuevoPokemon = cambiarPokemon(batallaId, jugadorId);
-    res.json(nuevoPokemon);
+    const { indice } = req.body;
+
+    try {
+        const nuevoPokemon = cambiarPokemon(batallaId, jugadorId, indice);
+        res.json(nuevoPokemon);
+    } catch (e) {
+        res.status(400).json({ message: e.message });
+    }
 }

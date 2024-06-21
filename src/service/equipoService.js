@@ -20,9 +20,9 @@ export const vidaPokemonActivo = (batallaId, jugadorId) => {
     return { nombre: pokemonActivo.nombre, hp: pokemonActivo.hp };
 }
 
-export const cambiarPokemon = (batallaId, jugadorId) => {
+export const cambiarPokemon = (batallaId, jugadorId, indice) => {
     const batalla = batallaService.obtenerBatalla(batallaId);
     const jugador = batalla.jugador1.nombre === jugadorId ? batalla.jugador1 : batalla.jugador2;
-    const nuevoPokemon = jugador.cambiarPokemon();
+    const nuevoPokemon = jugador.cambiarPokemon(indice);
     return { nombre: nuevoPokemon.nombre, hp: nuevoPokemon.hp };
 }

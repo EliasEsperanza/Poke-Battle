@@ -31,3 +31,9 @@ export const ataque = (req, res) => {
         res.status(400).json({ message: e.message });
     }
 };
+
+export const obtenerResumen = (req, res) => {
+    const { batallaId } = req.params;
+    const resumen = batallaService.obtenerResumenBatalla(batallaId);
+    res.json(resumen);
+}
