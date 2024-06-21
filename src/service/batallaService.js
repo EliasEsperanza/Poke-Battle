@@ -33,6 +33,9 @@ class BatallaService {
         if (!movimiento) {
             throw new Error('El movimiento no existe');
         }
+        if (movimiento.pp <= 0) {
+            throw new Error('No hay PP suficientes para realizar el ataque');
+        }
 
         const damage = realizarAtaque(atacanteActivo, defensorActivo, movimiento);
         const response = { damage, movimiento: movimiento.nombre, atacante: atacanteActivo.nombre, defensor: defensorActivo.nombre };

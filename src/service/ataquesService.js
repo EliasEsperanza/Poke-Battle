@@ -1,6 +1,8 @@
 export const calcularDamage = (atacante, defensor, movimiento) => {
     const baseDamage = movimiento.power;
-    const damage = baseDamage * (atacante.ataque / defensor.defensa);
+    const ataque = movimiento.esEspecial ? atacante.ataqueEspecial : atacante.ataque;
+    const defensa = movimiento.esEspecial ? defensor.defensaEspecial : defensor.defensa;
+    const damage = baseDamage * (ataque / defensa);
     return Math.floor(damage);
 };
 
