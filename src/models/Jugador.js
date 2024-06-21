@@ -23,7 +23,7 @@ export class Jugador {
         return null; // Todos los Pokémon están noqueados
     }
 
-    cambiarAPokemon(indice) {
+    cambiarPokemon(indice) {
         if (indice < 0 || indice >= this.pokemones.length) {
             throw new Error('Índice de Pokémon no válido');
         }
