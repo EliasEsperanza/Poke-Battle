@@ -37,16 +37,16 @@ class BatallaService {
             throw new Error('No hay PP suficientes para realizar el ataque');
         }
 
-        const damage = realizarAtaque(atacanteActivo, defensorActivo, movimiento);
+        const { damage, noqueado } = realizarAtaque(atacanteActivo, defensorActivo, movimiento);
         const response = { damage, movimiento: movimiento.nombre, atacante: atacanteActivo.nombre, defensor: defensorActivo.nombre };
 
-        if (defensorActivo.noqueado()) {
+        if (noqueado) {
             response.message = `${defensorActivo.nombre} ha sido noqueado`;
             if (defensor.pokemonesUtilizables()) {
                 const siguientePokemon = defensor.cambiarPokemon();
                 response.siguientePokemon = `${defensor.nombre} ha cambiado a ${siguientePokemon.nombre}`;
             } else {
-                response.message += ` y ${defensor.nombre} no tiene más Pokémon`;
+                response.message += ` y ${defensor.nombre} no tiene más Pokémon. ${atacante.nombre} ha ganado la batalla!`;
                 response.ganador = atacante.nombre;
             }
         }
@@ -54,7 +54,7 @@ class BatallaService {
         return response;
     }
 
-    obtenerResumenBatalla = (batallaId) => {
+    obtenerResumenBatalla(batallaId) {
         const batalla = this.obtenerBatalla(batallaId);
         const resumen = {
             jugador1: {

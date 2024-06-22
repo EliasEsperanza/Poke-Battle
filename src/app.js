@@ -15,4 +15,10 @@ app.use(express.json());
 app.use(batallaRoutes);
 app.use(equipoRoutes);
 
+// Middleware de manejo de errores
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ message: 'Internal Server Error' });
+});
+
 export default app;

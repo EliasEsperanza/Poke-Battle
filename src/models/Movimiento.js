@@ -1,5 +1,5 @@
-export class Movimiento{
-    constructor(id,nombre,tipo,pp,power,accuracy, esEspecial = false){
+export class Movimiento {
+    constructor(id, nombre, tipo, pp, power, accuracy, esEspecial = false) {
         this.id = id;
         this.nombre = nombre;
         this.tipo = tipo;

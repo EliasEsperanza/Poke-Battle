@@ -21,19 +21,26 @@ const efectividadTipo ={
 
 const precisionAtaque = (accuracy) => {
     return Math.random() * 100 <= accuracy;
+};
 
-}
+const calcularEfectividad = (tipoAtaque, tipoDefensor) => {
+    if (efectividadTipo[tipoAtaque] && efectividadTipo[tipoAtaque][tipoDefensor] !== undefined) {
+        return efectividadTipo[tipoAtaque][tipoDefensor];
+    }
+    return 1; // Efectividad neutral si no se encuentra en la tabla
+};
 
 export const calcularDamage = (atacante, defensor, movimiento) => {
-
-    if(!precisionAtaque(movimiento.accuracy)){
+    if (!precisionAtaque(movimiento.accuracy)) {
         return 0;
     }
 
     const baseDamage = movimiento.power;
     const ataque = movimiento.esEspecial ? atacante.ataqueEspecial : atacante.ataque;
     const defensa = movimiento.esEspecial ? defensor.defensaEspecial : defensor.defensa;
-    let damage = baseDamage * (ataque / defensa);
+    const efectividad = calcularEfectividad(movimiento.tipo, defensor.tipo);
+
+    let damage = baseDamage * (ataque / defensa) * efectividad;
     return Math.floor(damage);
 };
 
@@ -44,5 +51,9 @@ export const realizarAtaque = (pokemonAtacante, pokemonDefensor, movimiento) => 
     const damage = calcularDamage(pokemonAtacante, pokemonDefensor, movimiento);
     pokemonDefensor.recibirDamage(damage);
     movimiento.pp--;
-    return damage;
+
+    return {
+        damage,
+        noqueado: pokemonDefensor.hp <= 0
+    };
 };
