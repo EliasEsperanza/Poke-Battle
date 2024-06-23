@@ -1,6 +1,26 @@
 import { batallaService } from "../service/batallaService.js";
-import { Jugador } from "../models/Jugador.js";
-import { Pokemon } from "../models/Pokemon.js";
+
+export const crearSala = (req, res) => {
+    const { nombreJugador, pokemonesJugador } = req.body;
+
+    try {
+        const salaId = batallaService.crearSala(nombreJugador, pokemonesJugador);
+        res.json({ message: 'Sala creada', salaId });
+    } catch (e) {
+        res.status(400).json({ message: e.message });
+    }
+};
+
+export const unirseSala = (req, res) => {
+    const { salaId, nombreJugador, pokemonesJugador } = req.body;
+
+    try {
+        const batallaId = batallaService.unirseSala(salaId, nombreJugador, pokemonesJugador);
+        res.json({ message: 'Jugador unido a la sala, batalla creada', batallaId });
+    } catch (e) {
+        res.status(400).json({ message: e.message });
+    }
+};
 
 export const crearBatalla = (req, res) => {
     const { nombreJugador1, pokemonesJugador1, nombreJugador2, pokemonesJugador2 } = req.body;
@@ -33,3 +53,4 @@ export const obtenerResumen = (req, res) => {
     const resumen = batallaService.obtenerResumenBatalla(batallaId);
     res.json(resumen);
 };
+

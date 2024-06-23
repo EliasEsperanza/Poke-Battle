@@ -1,9 +1,30 @@
 import { Batalla } from '../models/Batalla.js';
 import { realizarAtaque } from './ataquesService.js';
+import { Jugador } from '../models/Jugador.js';
+import { Pokemon } from '../models/Pokemon.js';
 
 class BatallaService {
     constructor() {
         this.batallasActivas = {};
+        this.salasDeEspera = {};
+    }
+
+    crearSala(nombreJugador, pokemonesJugador) {
+        const salaId = Math.random().toString(36).substring(7);
+        const jugador = new Jugador(nombreJugador, pokemonesJugador.map(pokemon => new Pokemon(pokemon.id, pokemon.nombre, pokemon.hp, pokemon.ataque, pokemon.defensa, pokemon.velocidad, pokemon.ataqueEspecial, pokemon.defensaEspecial, pokemon.movimientos)));
+        this.salasDeEspera[salaId] = { jugador1: jugador };
+        return salaId;
+    }
+
+    unirseSala(salaId, nombreJugador, pokemonesJugador) {
+        const sala = this.salasDeEspera[salaId];
+        if (!sala) {
+            throw new Error('Sala no encontrada');
+        }
+        const jugador2 = new Jugador(nombreJugador, pokemonesJugador.map(pokemon => new Pokemon(pokemon.id, pokemon.nombre, pokemon.hp, pokemon.ataque, pokemon.defensa, pokemon.velocidad, pokemon.ataqueEspecial, pokemon.defensaEspecial, pokemon.movimientos)));
+        const batallaId = this.crearBatalla(sala.jugador1, jugador2);
+        delete this.salasDeEspera[salaId];
+        return batallaId;
     }
 
     crearBatalla(jugador1, jugador2) {
