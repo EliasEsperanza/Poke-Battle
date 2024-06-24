@@ -81,6 +81,7 @@ class BatallaService {
             jugador1: {
                 nombre: batalla.jugador1.nombre,
                 pokemones: batalla.jugador1.pokemones.map(p => ({
+                    id: p.id,
                     nombre: p.nombre,
                     hp: p.hp,
                     movimientos: p.movimientos.map(m => m.nombre)
@@ -89,6 +90,7 @@ class BatallaService {
             jugador2: {
                 nombre: batalla.jugador2.nombre,
                 pokemones: batalla.jugador2.pokemones.map(p => ({
+                    id: p.id,
                     nombre: p.nombre,
                     hp: p.hp,
                     movimientos: p.movimientos.map(m => m.nombre)

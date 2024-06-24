@@ -1,23 +1,23 @@
-const efectividadTipo ={
-    'normal': {'lucha': 2, 'fantasma': 0},
-    'fuego': {'agua': 0.5, 'planta': 2, 'hierro': 0.5, 'bicho': 2, 'hada': 2, 'hielo': 2},
-    'agua': {'fuego': 2, 'planta': 0.5, 'tierra': 2, 'roca': 2},
-    'planta': {'agua': 2, 'fuego': 0.5, 'tierra': 0.5, 'roca': 2, 'volador': 2, 'bicho': 2},
-    'electrico': {'agua': 2, 'volador': 0.5, 'tierra': 0},
-    'hielo': {'planta': 2, 'tierra': 2, 'volador': 2, 'dragon': 2},
-    'lucha': {'normal': 0.5, 'hielo': 2, 'roca': 0.5, 'siniestro': 2, 'volador': 0.5, 'psiquico': 0.5, 'bicho': 0.5, 'hada': 2, 'veneno': 0.5},
-    'veneno': {'planta': 2, 'hada': 2, 'lucha': 2, 'bicho': 2, 'veneno': 0.5, 'psiquico': 0.5},
-    'tierra': {'fuego': 2, 'electrico': 2, 'roca': 2, 'acero': 2, 'veneno': 0.5, 'planta': 2},
-    'volador': {'planta': 0.5, 'lucha': 2, 'bicho': 0.5, 'electrico': 2, 'hielo': 0.5, 'roca': 2},
-    'psiquico': {'lucha': 2, 'veneno': 2, 'psiquico': 0.5, 'siniestro': 0},
-    'bicho': {'planta': 0.5, 'psiquico': 2, 'lucha': 0.5, 'volador': 2, 'siniestro': 2, 'fuego': 0.5, 'fantasma': 0.5},
-    'roca': {'fuego': 2, 'hielo': 2, 'volador': 0.5, 'bicho': 2, 'lucha': 2},
-    'fantasma': {'fantasma': 2, 'psiquico': 2, 'normal': 0},
+const efectividadTipo = {
+    'normal': {'fighting': 2, 'ghost': 0},
+    'fire': {'water': 0.5, 'grass': 2, 'steel': 0.5, 'bug': 2, 'fairy': 2, 'ice': 2},
+    'water': {'fire': 2, 'grass': 0.5, 'ground': 2, 'rock': 2},
+    'grass': {'water': 2, 'fire': 0.5, 'ground': 0.5, 'rock': 2, 'flying': 2, 'bug': 2},
+    'electric': {'water': 2, 'flying': 0.5, 'ground': 0},
+    'ice': {'grass': 2, 'ground': 2, 'flying': 2, 'dragon': 2},
+    'fighting': {'normal': 0.5, 'ice': 2, 'rock': 0.5, 'dark': 2, 'flying': 0.5, 'psychic': 0.5, 'bug': 0.5, 'fairy': 2, 'poison': 0.5},
+    'poison': {'grass': 2, 'fairy': 2, 'fighting': 2, 'bug': 2, 'poison': 0.5, 'psychic': 0.5},
+    'ground': {'fire': 2, 'electric': 2, 'rock': 2, 'steel': 2, 'poison': 0.5, 'grass': 2},
+    'flying': {'grass': 0.5, 'fighting': 2, 'bug': 0.5, 'electric': 2, 'ice': 0.5, 'rock': 2},
+    'psychic': {'fighting': 2, 'poison': 2, 'psychic': 0.5, 'dark': 0},
+    'bug': {'grass': 0.5, 'psychic': 2, 'fighting': 0.5, 'flying': 2, 'dark': 2, 'fire': 0.5, 'ghost': 0.5},
+    'rock': {'fire': 2, 'ice': 2, 'flying': 0.5, 'bug': 2, 'fighting': 2},
+    'ghost': {'ghost': 2, 'psychic': 2, 'normal': 0},
     'dragon': {'dragon': 2},
-    'acero': {'roca': 0.5, 'hielo': 0.5, 'hada': 2, 'acero': 0.5, 'planta': 0.5, 'bicho': 0.5, 'volador': 0.5, 'normal': 0.5, 'veneno': 0},
-    'siniestro': {'fantasma': 2, 'psiquico': 2, 'lucha': 0.5, 'siniestro': 0.5, 'hada': 2},
-    'hada': {'lucha': 0.5, 'dragon': 0, 'siniestro': 0.5, 'acero': 0.5, 'fuego': 0.5}
-}
+    'steel': {'rock': 0.5, 'ice': 0.5, 'fairy': 2, 'steel': 0.5, 'grass': 0.5, 'bug': 0.5, 'flying': 0.5, 'normal': 0.5, 'poison': 0},
+    'dark': {'ghost': 2, 'psychic': 2, 'fighting': 0.5, 'dark': 0.5, 'fairy': 2},
+    'fairy': {'fighting': 0.5, 'dragon': 0, 'dark': 0.5, 'steel': 0.5, 'fire': 0.5}
+};
 
 const precisionAtaque = (accuracy) => {
     return Math.random() * 100 <= accuracy;
