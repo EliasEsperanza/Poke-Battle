@@ -75,7 +75,7 @@ export const calcularDamage = (atacante, defensor, movimiento) => {
         return 0;
     }
 
-    const baseDamage = (movimiento.power)*0.01;
+    const baseDamage = movimiento.power;
     const ataque = movimiento.esEspecial ? atacante.ataqueEspecial : atacante.ataque;
     const defensa = movimiento.esEspecial ? defensor.defensaEspecial : defensor.defensa;
     const efectividad = calcularEfectividad(movimiento.tipo, defensor.tipo);
