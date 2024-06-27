@@ -224,60 +224,93 @@ class BatallaService {
         };
     }
 
-    // Método para procesar los ataques de ambos jugadores
     procesarAtaques(batallaId) {
-    const batalla = this.obtenerBatalla(batallaId);
+        const batalla = this.obtenerBatalla(batallaId);
 
-    if (!batalla) {
-        throw new Error(`Batalla con ID ${batallaId} no encontrada`);
-    }
+        if (!batalla) {
+            throw new Error(`Batalla con ID ${batallaId} no encontrada`);
+        }
 
-    if (!this.ataquesPendientes[batallaId] || Object.keys(this.ataquesPendientes[batallaId]).length < 2) {
-        throw new Error('Ambos jugadores deben enviar sus ataques primero');
-    }
+        if (!this.ataquesPendientes[batallaId] || Object.keys(this.ataquesPendientes[batallaId]).length < 2) {
+            throw new Error('Ambos jugadores deben enviar sus ataques primero');
+        }
 
-    const [jugador1, jugador2] = [batalla.jugador1, batalla.jugador2];
-    const [ataque1, ataque2] = [this.ataquesPendientes[batallaId][jugador1.nombre], this.ataquesPendientes[batallaId][jugador2.nombre]];
+        const [jugador1, jugador2] = [batalla.jugador1, batalla.jugador2];
+        const [ataque1, ataque2] = [this.ataquesPendientes[batallaId][jugador1.nombre], this.ataquesPendientes[batallaId][jugador2.nombre]];
 
-    if (!ataque1 || !ataque2) {
-        throw new Error('Faltan ataques de uno o ambos jugadores');
-    }
+        if (!ataque1 || !ataque2) {
+            throw new Error('Faltan ataques de uno o ambos jugadores');
+        }
 
-    const [pokemon1, pokemon2] = [ataque1.atacante, ataque2.atacante];
-    const [movimiento1, movimiento2] = [ataque1.movimiento, ataque2.movimiento];
+        const [pokemon1, pokemon2] = [ataque1.atacante, ataque2.atacante];
+        const [movimiento1, movimiento2] = [ataque1.movimiento, ataque2.movimiento];
 
-    const velocidad1 = pokemon1.velocidad;
-    const velocidad2 = pokemon2.velocidad;
+        const velocidad1 = pokemon1.velocidad;
+        const velocidad2 = pokemon2.velocidad;
 
-    let resultados = [];
+        let resultados = [];
 
-    try {
-        if (velocidad1 >= velocidad2) {
-            resultados.push(this.aplicarAtaque(pokemon2, pokemon1, movimiento1));
-            if (pokemon2.hp > 0) {
-                resultados.push(this.aplicarAtaque(pokemon1, pokemon2, movimiento2));
-            }
-        } else if (velocidad1 == velocidad2) {
-            const random = Math.floor(Math.random() * 2);
-            if (random == 0) {
+        try {
+            if (velocidad1 >= velocidad2) {
                 resultados.push(this.aplicarAtaque(pokemon2, pokemon1, movimiento1));
                 if (pokemon2.hp > 0) {
                     resultados.push(this.aplicarAtaque(pokemon1, pokemon2, movimiento2));
+                } else {
+                    this.cambiarPokemonSiNoqueado(batalla, jugador2, resultados);
+                }
+            } else if (velocidad1 == velocidad2) {
+                const random = Math.floor(Math.random() * 2);
+                if (random == 0) {
+                    resultados.push(this.aplicarAtaque(pokemon2, pokemon1, movimiento1));
+                    if (pokemon2.hp > 0) {
+                        resultados.push(this.aplicarAtaque(pokemon1, pokemon2, movimiento2));
+                    } else {
+                        this.cambiarPokemonSiNoqueado(batalla, jugador2, resultados);
+                    }
+                } else {
+                    resultados.push(this.aplicarAtaque(pokemon1, pokemon2, movimiento2));
+                    if (pokemon1.hp > 0) {
+                        resultados.push(this.aplicarAtaque(pokemon2, pokemon1, movimiento1));
+                    } else {
+                        this.cambiarPokemonSiNoqueado(batalla, jugador1, resultados);
+                    }
                 }
             } else {
                 resultados.push(this.aplicarAtaque(pokemon1, pokemon2, movimiento2));
                 if (pokemon1.hp > 0) {
                     resultados.push(this.aplicarAtaque(pokemon2, pokemon1, movimiento1));
+                } else {
+                    this.cambiarPokemonSiNoqueado(batalla, jugador1, resultados);
                 }
             }
-        } else {
-            resultados.push(this.aplicarAtaque(pokemon1, pokemon2, movimiento2));
-            if (pokemon1.hp > 0) {
-                resultados.push(this.aplicarAtaque(pokemon2, pokemon1, movimiento1));
-            }
+        } catch (error) {
+            throw new Error(`Error al aplicar ataques: ${error.message}`);
         }
-    } catch (error) {
-        throw new Error(`Error al aplicar ataques: ${error.message}`);
+
+        delete this.ataquesPendientes[batallaId];
+
+        return resultados;
+    }
+
+    aplicarAtaque(defensor, atacante, movimiento) {
+        const resultado = recibirAtaque(defensor, atacante, movimiento);
+        return {
+            atacante: atacante.nombre,
+            defensor: defensor.nombre,
+            movimiento: movimiento.nombre,
+            damage: resultado.damage,
+            noqueado: resultado.noqueado
+        };
+    }
+
+    cambiarPokemonSiNoqueado(batalla, jugador, resultados) {
+        const pokemonNoqueado = jugador.getPokemonActivo();
+        if (pokemonNoqueado.hp <= 0 && jugador.pokemonesUtilizables()) {
+            const siguientePokemon = jugador.cambiarPokemon();
+            resultados.push({
+                message: `${jugador.nombre} ha cambiado a ${siguientePokemon.nombre}`
+            });
+        }
     }
 
     delete this.ataquesPendientes[batallaId];
