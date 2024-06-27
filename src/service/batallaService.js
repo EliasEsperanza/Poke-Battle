@@ -248,7 +248,20 @@ class BatallaService {
             if (pokemon2.hp > 0) {
                 resultados.push(this.aplicarAtaque(pokemon1, pokemon2, movimiento2));
             }
-        } else {
+        }else if(velocidad1==velocidad2){
+            const random = Math.floor(Math.random() * 2);
+            if(random == 0){
+                resultados.push(this.aplicarAtaque(pokemon2, pokemon1, movimiento1));
+                if (pokemon2.hp > 0) {
+                    resultados.push(this.aplicarAtaque(pokemon1, pokemon2, movimiento2));
+                }
+            }else{
+                resultados.push(this.aplicarAtaque(pokemon1, pokemon2, movimiento2));
+                if (pokemon1.hp > 0) {
+                    resultados.push(this.aplicarAtaque(pokemon2, pokemon1, movimiento1));
+                }
+            }
+        }else {
             resultados.push(this.aplicarAtaque(pokemon1, pokemon2, movimiento2));
             if (pokemon1.hp > 0) {
                 resultados.push(this.aplicarAtaque(pokemon2, pokemon1, movimiento1));
