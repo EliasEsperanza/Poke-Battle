@@ -9,7 +9,7 @@ import { Batalla } from '../models/Batalla.js';
 `realizarAtaque` desde el archivo `ataquesService.js`. Esto permite que el archivo JavaScript actual
 use la función `realizarAtaque` definida en `ataquesService.js` para realizar ataques durante una
 batalla. */
-import { realizarAtaque } from './ataquesService.js';
+import { realizarAtaque, enviarAtaque, recibirAtaque } from './ataquesService.js';
 /* La línea `import { Jugador } from '../models/Jugador.js';` está importando la clase `Jugador` desde
 el archivo `Jugador.js` ubicado en el directorio `models`. Esto permite que el archivo JavaScript
 actual use la clase `Jugador` definida en `Jugador.js` para crear instancias de la clase `Jugador` y
@@ -200,6 +200,76 @@ class BatallaService {
         };
         return resumen;
     }
+
+    enviarAtaque(batallaId, jugadorId, nombreMovimiento) {
+        const batalla = this.obtenerBatalla(batallaId);
+        const atacante = batalla.jugador1.nombre === jugadorId ? batalla.jugador1 : batalla.jugador2;
+        const atacanteActivo = atacante.getPokemonActivo();
+        const movimiento = atacanteActivo.movimientos.find(mov => mov.nombre === nombreMovimiento);
+
+        if (!movimiento) {
+            throw new Error('El movimiento no existe');
+        }
+
+        const ataque = enviarAtaque(atacanteActivo, movimiento);
+        if (!batalla.ataques) {
+            batalla.ataques = {};
+        }
+
+        batalla.ataques[jugadorId] = ataque;
+
+        return {
+            message: `Ataque ${nombreMovimiento} enviado por ${atacante.nombre}`
+        };
+    }
+
+    // Método para procesar los ataques de ambos jugadores
+    procesarAtaques(batallaId) {
+        const batalla = this.obtenerBatalla(batallaId);
+
+        if (!batalla.ataques || Object.keys(batalla.ataques).length < 2) {
+            throw new Error('Ambos jugadores deben enviar sus ataques primero');
+        }
+
+        const [jugador1, jugador2] = [batalla.jugador1, batalla.jugador2];
+        const [ataque1, ataque2] = [batalla.ataques[jugador1.nombre], batalla.ataques[jugador2.nombre]];
+
+        const [pokemon1, pokemon2] = [jugador1.getPokemonActivo(), jugador2.getPokemonActivo()];
+
+        const velocidad1 = pokemon1.velocidad;
+        const velocidad2 = pokemon2.velocidad;
+
+        let resultados = [];
+
+        if (velocidad1 >= velocidad2) {
+            resultados.push(this.aplicarAtaque(pokemon2, pokemon1, ataque1.movimiento));
+            if (pokemon2.hp > 0) {
+                resultados.push(this.aplicarAtaque(pokemon1, pokemon2, ataque2.movimiento));
+            }
+        } else {
+            resultados.push(this.aplicarAtaque(pokemon1, pokemon2, ataque2.movimiento));
+            if (pokemon1.hp > 0) {
+                resultados.push(this.aplicarAtaque(pokemon2, pokemon1, ataque1.movimiento));
+            }
+        }
+
+        delete batalla.ataques;
+
+        return resultados;
+    }
+
+    // Función para aplicar el ataque y devolver el resultado
+    aplicarAtaque(defensor, atacante, movimiento) {
+        const resultado = recibirAtaque(defensor, atacante, movimiento);
+        return {
+            atacante: atacante.nombre,
+            defensor: defensor.nombre,
+            movimiento: movimiento.nombre,
+            damage: resultado.damage,
+            noqueado: resultado.noqueado
+        };
+    }
+    
 }
 
 /* La línea `export const batallaService = new BatallaService();` está exportando una instancia de la

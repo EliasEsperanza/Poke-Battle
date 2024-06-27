@@ -112,3 +112,25 @@ export const obtenerResumen = (req, res) => {
     res.json(resumen);
 };
 
+export const realizarEnvioAttack = (req, res) => {
+    const { batallaId } = req.params;
+    const { jugadorId, nombreMovimiento } = req.body;
+
+    try {
+        const resultado = batallaService.enviarAtaque(batallaId, jugadorId, nombreMovimiento);
+        res.json(resultado);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+
+export const procesarAtaque = (req, res) => {
+    const { batallaId } = req.params;
+
+    try {
+        const resultados = batallaService.procesarAtaques(batallaId);
+        res.json(resultados);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+}

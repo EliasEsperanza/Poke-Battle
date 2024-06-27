@@ -115,3 +115,23 @@ export const realizarAtaque = (pokemonAtacante, pokemonDefensor, movimiento) => 
         noqueado: pokemonDefensor.hp <= 0
     };
 };
+
+export const enviarAtaque = (pokemonAtacante, movimiento) => {
+    if (movimiento.pp <= 0) {
+        throw new Error('No hay PP suficientes para realizar el ataque');
+    }
+    movimiento.pp--;
+    return {
+        pokemonAtacante,
+        movimiento
+    };
+}
+
+export const recibirAtaque = (pokemonDefensor, pokemonAtacante) => {
+    const damage = calcularDamage(pokemonAtacante, pokemonDefensor, ataque.movimiento);
+    pokemonDefensor.recibirDamage(damage);
+    return {
+        damage,
+        noqueado: pokemonDefensor.hp <= 0
+    };
+}

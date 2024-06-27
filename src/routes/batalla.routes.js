@@ -8,7 +8,7 @@ import { Router } from "express";
 ubicado en el directorio `controller`. Luego, estas funciones se utilizan en el enrutador para
 manejar diferentes rutas en una aplicación Express relacionadas con la creación de salas, unirse a
 salas, crear batallas, realizar ataques y obtener resúmenes de batalla. */
-import { crearSala, unirseSala, crearBatalla, ataque, obtenerResumen } from "../controller/batallaController.js";
+import { crearSala, unirseSala, crearBatalla, ataque, obtenerResumen, realizarEnvioAttack, procesarAtaque } from "../controller/batallaController.js";
 
 /* `const router = Router();` está creando una nueva instancia de la clase `Router` desde el módulo
 "express" en JavaScript. Esta instancia del enrutador se puede utilizar para definir rutas para la
@@ -52,5 +52,8 @@ importada de `batallaController.js`. Cuando se realiza una solicitud GET al punt
 realizar acciones relacionadas con la obtención de un resumen de una batalla específica dentro de la
 aplicación. */
 router.get('/batalla/:batallaId/resumen', obtenerResumen);
+
+router.get('/batalla/:batallaId/procesarAtaque', procesarAtaque);
+router.post('/batalla/:batallaId/ataque/envio', realizarEnvioAttack);
 
 export default router;
