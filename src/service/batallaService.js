@@ -21,6 +21,8 @@ clase `Pokemon` definida en `Pokemon.js` para crear instancias de la clase `Poke
 propiedades y métodos. */
 import { Pokemon } from '../models/Pokemon.js';
 
+import { Resultado } from '../models/Resultado.js';
+
 /* La clase `BatallaService` gestiona la creación de salas de batalla, uniendo a los jugadores en las
 batallas, manejando ataques y proporcionando resúmenes de batalla en un sistema de batalla Pokémon. */
 class BatallaService {
@@ -308,7 +310,7 @@ class BatallaService {
             defensor: defensor.nombre,
             movimiento: movimiento.nombre,
             damage: resultado.damage,
-            noqueado: resultado.noqueado
+            noqueado: resultado.noqueado,
         };
     }
 
@@ -331,6 +333,19 @@ class BatallaService {
     terminarBatalla(batallaId) {
         delete this.batallasActivas[batallaId];
     }
+
+    obtenerResultado(batallaId) {
+        const resultados = this.procesarAtaques(batallaId);
+
+        if(resultados.Error || resultados.error) {
+            return {};
+            
+        }else{
+            const resultado = new Resultado(resultados);
+            return resultado;
+        }
+    }
+
 }
 
 export const batallaService = new BatallaService();
