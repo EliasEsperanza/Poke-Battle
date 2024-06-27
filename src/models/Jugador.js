@@ -13,7 +13,11 @@ export class Jugador {
     * basada en `pokemonActivoIndex`.
     */
     getPokemonActivo() {
-        return this.pokemones[this.pokemonActivoIndex];
+        const pokemonActivo = this.pokemones[this.pokemonActivoIndex];
+        if (!pokemonActivo || pokemonActivo.hp <= 0) {
+            throw new Error('No hay Pokémon activo o el Pokémon activo está noqueado');
+        }
+        return pokemonActivo;
     }
 
     /**
@@ -32,12 +36,29 @@ export class Jugador {
      * @returns Se está devolviendo el método `getPokemonActivo()`.
      */
     cambiarPokemon() {
-        for (let i = 0; i < this.pokemones.length; i++) {
+        let pokemonEncontrado = false;
+        for (let i = this.pokemonActivoIndex + 1; i < this.pokemones.length; i++) {
             if (this.pokemones[i].hp > 0) {
                 this.pokemonActivoIndex = i;
-                return this.getPokemonActivo();
+                pokemonEncontrado = true;
+                break;
             }
         }
-        throw new Error('No hay más Pokémon utilizables');
+        
+        if (!pokemonEncontrado) {
+            for (let i = 0; i < this.pokemonActivoIndex; i++) {
+                if (this.pokemones[i].hp > 0) {
+                    this.pokemonActivoIndex = i;
+                    pokemonEncontrado = true;
+                    break;
+                }
+            }
+        }
+        
+        if (!pokemonEncontrado) {
+            throw new Error('No hay más Pokémon utilizables');
+        }
+
+        return this.getPokemonActivo();
     }
 }

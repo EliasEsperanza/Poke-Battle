@@ -212,6 +212,10 @@ class BatallaService {
         if (!movimiento) {
             throw new Error('El movimiento no existe');
         }
+        
+        if(movimiento.pp <= 0) {
+            throw new Error('No hay PP suficientes para realizar el ataque');
+        }
 
         if (!this.ataquesPendientes[batallaId]) {
             this.ataquesPendientes[batallaId] = {};

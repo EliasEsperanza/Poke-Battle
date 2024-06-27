@@ -19,7 +19,7 @@ export const obtenerMovimientos = (batallaId, jugadorId) => {
     const jugador = batalla.jugador1.nombre === jugadorId ? batalla.jugador1 : batalla.jugador2;
     const movimientos = jugador.getPokemonActivo().movimientos;
     return movimientos;
-}
+};
 
 /**
  * La función `verEquipo` recupera la lista de Pokémon que pertenecen a un jugador específico en una

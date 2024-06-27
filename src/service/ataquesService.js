@@ -116,16 +116,27 @@ export const realizarAtaque = (pokemonAtacante, pokemonDefensor, movimiento) => 
     };
 };
 
-export const enviarAtaque = (pokemonAtacante, movimiento) => {
+export const enviarAtaque = (batallaId, jugadorId, nombreMovimiento) => {
+    const batalla = batallaService.obtenerBatalla(batallaId);
+    const jugador = batalla.jugador1.nombre === jugadorId ? batalla.jugador1 : batalla.jugador2;
+    const pokemonAtacante = jugador.getPokemonActivo();
+    const movimiento = pokemonAtacante.movimientos.find(mov => mov.nombre === nombreMovimiento);
+
+    if (!movimiento) {
+        throw new Error('Movimiento no encontrado');
+    }
+
     if (movimiento.pp <= 0) {
         throw new Error('No hay PP suficientes para realizar el ataque');
     }
+
     movimiento.pp--;
     return {
         pokemonAtacante,
         movimiento
     };
-}
+};
+
 
 export const recibirAtaque = (pokemonDefensor, pokemonAtacante, movimiento) => {
     const damage = calcularDamage(pokemonAtacante, pokemonDefensor, movimiento);
