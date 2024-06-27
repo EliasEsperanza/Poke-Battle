@@ -134,3 +134,14 @@ export const procesarAtaque = (req, res) => {
         res.status(400).json({ error: error.message });
     }
 }
+
+export const terminarBattle = (req, res) => {
+    const { batallaId } = req.params;
+
+    try {
+        batallaService.terminarBatalla(batallaId);
+        res.json({ message: 'Batalla terminada' });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+}

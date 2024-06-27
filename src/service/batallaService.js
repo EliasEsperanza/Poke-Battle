@@ -284,6 +284,10 @@ class BatallaService {
             noqueado: resultado.noqueado
         };
     }
+
+    terminarBatalla(batallaId) {
+        delete this.batallasActivas[batallaId];
+    }
     
 }
 
