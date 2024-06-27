@@ -127,12 +127,13 @@ export const enviarAtaque = (pokemonAtacante, movimiento) => {
     };
 }
 
-export const recibirAtaque = (pokemonDefensor, pokemonAtacante) => {
-    const damage = calcularDamage(pokemonAtacante, pokemonDefensor, ataque.movimiento);
+export const recibirAtaque = (pokemonDefensor, pokemonAtacante, movimiento) => {
+    const damage = calcularDamage(pokemonAtacante, pokemonDefensor, movimiento);
     pokemonDefensor.recibirDamage(damage);
     return {
         damage,
         noqueado: pokemonDefensor.hp <= 0
     };
 }
+
 
