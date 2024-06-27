@@ -313,33 +313,9 @@ class BatallaService {
         }
     }
 
-    delete this.ataquesPendientes[batallaId];
-
-    return resultados;
-}
-
-
-    // Función auxiliar para aplicar el ataque y devolver el resultado
-    aplicarAtaque(defensor, atacante, movimiento) {
-        const resultado = recibirAtaque(defensor, atacante, movimiento);
-        return {
-            atacante: atacante.nombre,
-            defensor: defensor.nombre,
-            movimiento: movimiento.nombre,
-            damage: resultado.damage,
-            noqueado: resultado.noqueado
-        };
-    }
-
     terminarBatalla(batallaId) {
         delete this.batallasActivas[batallaId];
     }
-    
 }
 
-/* La línea `export const batallaService = new BatallaService();` está exportando una instancia de la
-clase `BatallaService` como `batallaService`. Esto permite que otros módulos o archivos importen y
-utilicen la instancia `batallaService` para acceder a los métodos y funcionalidades proporcionadas
-por la clase `BatallaService`. Al exportar la instancia de esta manera, se puede importar y utilizar
-en otras partes de la aplicación donde se necesita la funcionalidad "BatallaService". */
 export const batallaService = new BatallaService();
