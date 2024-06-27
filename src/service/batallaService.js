@@ -136,8 +136,19 @@ class BatallaService {
         const atacante = batalla.jugador1.nombre === jugadorId ? batalla.jugador1 : batalla.jugador2;
         const defensor = batalla.getOponente(atacante);
 
-        const atacanteActivo = atacante.getPokemonActivo();
-        const defensorActivo = defensor.getPokemonActivo();
+        let atacanteActivo;
+        try {
+            atacanteActivo = atacante.getPokemonActivo();
+        } catch (error) {
+            return { error: 'No hay Pokemon activo o el pokemon activo esta noqueado' };
+        }
+    
+        let defensorActivo;
+        try {
+            defensorActivo = defensor.getPokemonActivo();
+        } catch (error) {
+            return { error: 'El oponente no tiene Pokemon activo o el pokemon activo esta noqueado' };
+        }
 
         const movimiento = atacanteActivo.movimientos.find(mov => mov.nombre === nombreMovimiento);
         if (!movimiento) {
@@ -206,7 +217,12 @@ class BatallaService {
     enviarAtaque(batallaId, jugadorId, nombreMovimiento) {
         const batalla = this.obtenerBatalla(batallaId);
         const atacante = batalla.jugador1.nombre === jugadorId ? batalla.jugador1 : batalla.jugador2;
-        const atacanteActivo = atacante.getPokemonActivo();
+        let atacanteActivo;
+        try {
+            atacanteActivo = atacante.getPokemonActivo();
+        } catch (error) {
+            return { error: 'No hay Pokemon activo o el pokemon activo esta noqueado' };
+        }
         const movimiento = atacanteActivo.movimientos.find(mov => mov.nombre == nombreMovimiento);
 
         if (!movimiento) {
