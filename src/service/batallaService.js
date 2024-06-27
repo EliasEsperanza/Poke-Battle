@@ -302,7 +302,6 @@ class BatallaService {
         delete this.ataquesPendientes[batallaId];
 
         this.resultados[batallaId] = new Resultado(resultados);
-        delete this.resultados[batallaId];
 
         return resultados;
     }
