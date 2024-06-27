@@ -149,10 +149,10 @@ export const terminarBattle = (req, res) => {
 export const obtenerResultadoTurno = (req, res) => {
     const { batallaId } = req.params;
 
-    try{
+    try {
         const resultado = batallaService.obtenerResultado(batallaId);
         res.json({ message: 'Resultado del turno', resultado });
-    }catch(error){ 
-        res.status(400).json({ message: 'Error al obtener el resultado del turno' });
+    } catch (error) {
+        res.status(400).json({ message: `Error al obtener el resultado del turno: ${error.message}` });
     }
-}
+};

@@ -30,6 +30,7 @@ class BatallaService {
         this.batallasActivas = {};
         this.salasDeEspera = {};
         this.ataquesPendientes = {};
+        this.resultados = {};
     }
 
    /**
@@ -300,6 +301,8 @@ class BatallaService {
 
         delete this.ataquesPendientes[batallaId];
 
+        this.resultados[batallaId] = new Resultado(resultados);
+
         return resultados;
     }
 
@@ -335,15 +338,11 @@ class BatallaService {
     }
 
     obtenerResultado(batallaId) {
-        const resultados = this.procesarAtaques(batallaId);
-
-        if(resultados.Error || resultados.error) {
-            return {};
-            
-        }else{
-            const resultado = new Resultado(resultados);
-            return resultado;
+        const resultado = this.resultados[batallaId];
+        if (!resultado) {
+            throw new Error('No hay resultado disponible para esta batalla');
         }
+        return resultado;
     }
 
 }
