@@ -61,4 +61,8 @@ export class Jugador {
 
         return this.getPokemonActivo();
     }
+
+    getAllPokemonesConVida(){
+        return this.pokemones.find(pokemon => pokemon.hp > 0);
+    }
 }

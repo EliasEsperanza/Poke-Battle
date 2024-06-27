@@ -138,14 +138,14 @@ class BatallaService {
 
         let atacanteActivo;
         try {
-            atacanteActivo = atacante.getPokemonActivo();
+            atacanteActivo = atacante.getAllPokemonesConVida();
         } catch (error) {
             return { error: 'No hay Pokemon activo o el pokemon activo esta noqueado' };
         }
     
         let defensorActivo;
         try {
-            defensorActivo = defensor.getPokemonActivo();
+            defensorActivo = defensor.getAllPokemonesConVida()
         } catch (error) {
             return { error: 'El oponente no tiene Pokemon activo o el pokemon activo esta noqueado' };
         }
@@ -219,7 +219,7 @@ class BatallaService {
         const atacante = batalla.jugador1.nombre === jugadorId ? batalla.jugador1 : batalla.jugador2;
         let atacanteActivo;
         try {
-            atacanteActivo = atacante.getPokemonActivo();
+            atacanteActivo = atacante.getAllPokemonesConVida();
         } catch (error) {
             return { error: 'No hay Pokemon activo o el pokemon activo esta noqueado' };
         }
@@ -313,7 +313,7 @@ class BatallaService {
     }
 
     cambiarPokemonSiNoqueado(batalla, jugador, resultados) {
-        const pokemonNoqueado = jugador.getPokemonActivo();
+        const pokemonNoqueado = jugador.getAllPokemonesConVida();
         if (pokemonNoqueado.hp <= 0) {
             if (jugador.pokemonesUtilizables()) {
                 const siguientePokemon = jugador.cambiarPokemon();
