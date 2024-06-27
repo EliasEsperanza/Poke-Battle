@@ -135,3 +135,4 @@ export const recibirAtaque = (pokemonDefensor, pokemonAtacante) => {
         noqueado: pokemonDefensor.hp <= 0
     };
 }
+
