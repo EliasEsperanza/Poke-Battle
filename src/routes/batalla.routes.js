@@ -53,7 +53,7 @@ realizar acciones relacionadas con la obtención de un resumen de una batalla es
 aplicación. */
 router.get('/batalla/:batallaId/resumen', obtenerResumen);
 
-router.get('/batalla/:batallaId/procesarAtaque', procesarAtaque);
+router.post('/batalla/:batallaId/procesarAtaques', procesarAtaque);
 router.post('/batalla/:batallaId/ataque/envio', realizarEnvioAttack);
 
 export default router;

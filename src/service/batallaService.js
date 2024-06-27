@@ -27,6 +27,7 @@ class BatallaService {
     constructor() {
         this.batallasActivas = {};
         this.salasDeEspera = {};
+        this.ataquesPendientes = {};
     }
 
    /**
@@ -201,6 +202,7 @@ class BatallaService {
         return resumen;
     }
 
+    // Método para que un jugador envíe un ataque
     enviarAtaque(batallaId, jugadorId, nombreMovimiento) {
         const batalla = this.obtenerBatalla(batallaId);
         const atacante = batalla.jugador1.nombre === jugadorId ? batalla.jugador1 : batalla.jugador2;
@@ -211,12 +213,11 @@ class BatallaService {
             throw new Error('El movimiento no existe');
         }
 
-        const ataque = enviarAtaque(atacanteActivo, movimiento);
-        if (!batalla.ataques) {
-            batalla.ataques = {};
+        if (!this.ataquesPendientes[batallaId]) {
+            this.ataquesPendientes[batallaId] = {};
         }
 
-        batalla.ataques[jugadorId] = ataque;
+        this.ataquesPendientes[batallaId][jugadorId] = { atacante: atacanteActivo, movimiento };
 
         return {
             message: `Ataque ${nombreMovimiento} enviado por ${atacante.nombre}`
@@ -227,14 +228,15 @@ class BatallaService {
     procesarAtaques(batallaId) {
         const batalla = this.obtenerBatalla(batallaId);
 
-        if (!batalla.ataques || Object.keys(batalla.ataques).length < 2) {
+        if (!this.ataquesPendientes[batallaId] || Object.keys(this.ataquesPendientes[batallaId]).length < 2) {
             throw new Error('Ambos jugadores deben enviar sus ataques primero');
         }
 
         const [jugador1, jugador2] = [batalla.jugador1, batalla.jugador2];
-        const [ataque1, ataque2] = [batalla.ataques[jugador1.nombre], batalla.ataques[jugador2.nombre]];
+        const [ataque1, ataque2] = [this.ataquesPendientes[batallaId][jugador1.nombre], this.ataquesPendientes[batallaId][jugador2.nombre]];
 
-        const [pokemon1, pokemon2] = [jugador1.getPokemonActivo(), jugador2.getPokemonActivo()];
+        const [pokemon1, pokemon2] = [ataque1.atacante, ataque2.atacante];
+        const [movimiento1, movimiento2] = [ataque1.movimiento, ataque2.movimiento];
 
         const velocidad1 = pokemon1.velocidad;
         const velocidad2 = pokemon2.velocidad;
@@ -242,23 +244,23 @@ class BatallaService {
         let resultados = [];
 
         if (velocidad1 >= velocidad2) {
-            resultados.push(this.aplicarAtaque(pokemon2, pokemon1, ataque1.movimiento));
+            resultados.push(this.aplicarAtaque(pokemon2, pokemon1, movimiento1));
             if (pokemon2.hp > 0) {
-                resultados.push(this.aplicarAtaque(pokemon1, pokemon2, ataque2.movimiento));
+                resultados.push(this.aplicarAtaque(pokemon1, pokemon2, movimiento2));
             }
         } else {
-            resultados.push(this.aplicarAtaque(pokemon1, pokemon2, ataque2.movimiento));
+            resultados.push(this.aplicarAtaque(pokemon1, pokemon2, movimiento2));
             if (pokemon1.hp > 0) {
-                resultados.push(this.aplicarAtaque(pokemon2, pokemon1, ataque1.movimiento));
+                resultados.push(this.aplicarAtaque(pokemon2, pokemon1, movimiento1));
             }
         }
 
-        delete batalla.ataques;
+        delete this.ataquesPendientes[batallaId];
 
         return resultados;
     }
 
-    // Función para aplicar el ataque y devolver el resultado
+    // Función auxiliar para aplicar el ataque y devolver el resultado
     aplicarAtaque(defensor, atacante, movimiento) {
         const resultado = recibirAtaque(defensor, atacante, movimiento);
         return {
