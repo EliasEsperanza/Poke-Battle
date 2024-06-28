@@ -252,25 +252,27 @@ class BatallaService {
         if (!batalla) {
             throw new Error(`Batalla con ID ${batallaId} no encontrada`);
         }
-    
+
         const ataquesPendientes = this.ataquesPendientes[batallaId];
         if (!ataquesPendientes || Object.keys(ataquesPendientes).length < 2) {
             throw new Error('Ambos jugadores deben enviar sus ataques primero');
         }
-    
+
         const [jugador1, jugador2] = [batalla.jugador1, batalla.jugador2];
         const [ataque1, ataque2] = [ataquesPendientes[jugador1.nombre], ataquesPendientes[jugador2.nombre]];
-    
+
         if (!ataque1 || !ataque2) {
             throw new Error('Faltan ataques de uno o ambos jugadores');
         }
-    
+
         const [pokemon1, pokemon2] = [ataque1.atacante, ataque2.atacante];
         const [movimiento1, movimiento2] = [ataque1.movimiento, ataque2.movimiento];
-        const [velocidad1, velocidad2] = [pokemon1.velocidad, pokemon2.velocidad];
-    
+
+        const velocidad1 = pokemon1.velocidad;
+        const velocidad2 = pokemon2.velocidad;
+
         let resultados = [];
-    
+
         const procesarAtaquesSecuenciales = (primero, segundo, movimientoPrimero, movimientoSegundo) => {
             resultados.push(this.aplicarAtaque(segundo, primero, movimientoPrimero));
             if (segundo.hp > 0) {
@@ -279,25 +281,28 @@ class BatallaService {
                 this.cambiarPokemonSiNoqueado(batalla, segundo.jugador, resultados);
             }
         };
-    
+
         try {
-            if (velocidad1 !== velocidad2) {
-                const [atacantePrimero, atacanteSegundo] = velocidad1 > velocidad2 ? [pokemon1, pokemon2] : [pokemon2, pokemon1];
-                const [movimientoPrimero, movimientoSegundo] = velocidad1 > velocidad2 ? [movimiento1, movimiento2] : [movimiento2, movimiento1];
-                procesarAtaquesSecuenciales(atacantePrimero, atacanteSegundo, movimientoPrimero, movimientoSegundo);
+            if (velocidad1 > velocidad2) {
+                procesarAtaquesSecuenciales(pokemon1, pokemon2, movimiento1, movimiento2);
+            } else if (velocidad1 < velocidad2) {
+                procesarAtaquesSecuenciales(pokemon2, pokemon1, movimiento2, movimiento1);
             } else {
-                const primeroAtaca = Math.random() >= 0.5;
-                const [atacantePrimero, atacanteSegundo] = primeroAtaca ? [pokemon1, pokemon2] : [pokemon2, pokemon1];
-                const [movimientoPrimero, movimientoSegundo] = primeroAtaca ? [movimiento1, movimiento2] : [movimiento2, movimiento1];
-                procesarAtaquesSecuenciales(atacantePrimero, atacanteSegundo, movimientoPrimero, movimientoSegundo);
+                const random = Math.random() >= 0.5;
+                if (random) {
+                    procesarAtaquesSecuenciales(pokemon1, pokemon2, movimiento1, movimiento2);
+                } else {
+                    procesarAtaquesSecuenciales(pokemon2, pokemon1, movimiento2, movimiento1);
+                }
             }
         } catch (error) {
             throw new Error(`Error al aplicar ataques: ${error.message}`);
         }
-    
+
         delete this.ataquesPendientes[batallaId];
+
         this.resultados[batallaId] = new Resultado(resultados);
-    
+
         return resultados;
     }
 
